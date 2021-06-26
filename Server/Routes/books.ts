@@ -1,5 +1,5 @@
 // modules required for routing
-import express from 'express';
+import express,{Request, Response, NextFunction} from 'express';
 const router = express.Router();
 export default router;
 
@@ -7,7 +7,7 @@ export default router;
 import book from '../Models/books';
 
 /* GET books List page. READ */
-router.get('/', (req, res, next) => 
+router.get('/', (req:Request, res:Response, next:NextFunction) => 
 {
   // find all books in the books collection
   book.find( (err, books) => {
@@ -26,21 +26,42 @@ router.get('/', (req, res, next) =>
 });
 
 //  GET the Book Details page in order to add a new Book
-router.get('/add', (req, res, next) => {
+router.get('/add', (req:Request, res:Response, next: NextFunction) => {
 
-    /*****************
-     * ADD CODE HERE *
-     *****************/
+  /*****************
+   *  CODE ADDED*
+   *****************/
+   res.render('books/details', { title: 'Add', page: 'details', books: '' });
+
 
 });
 
 // POST process the Book Details page and create a new Book - CREATE
-router.post('/add', (req, res, next) => {
+router.post('/add', (req: Request, res: Response, next: NextFunction) => {
 
-    /*****************
-     * ADD CODE HERE *
-     *****************/
+  /*****************
+   *  CODE ADDED *
+   *****************/
+  let id = req.params.id;
 
+  //instantiate a new book item
+  let newBook = new book
+  ({
+    "Title": req.body.Title,
+    "Description": req.body.Description,
+    "Price": req.body.Price,
+    "Author": req.body.Author,
+    "Genre": req.body.Genre
+  });
+// db.books.insert({contact data is here...})
+book.create(newBook,(err)=>{
+  if(err)
+  {
+    console.error(err);
+    res.end(err);
+  }
+  res.redirect('/books');
+})
 });
 
 // GET the Book Details page in order to edit an existing Book
